@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DenseNet</title>
+</head>
+<body>
+    <script src="./index.js" type="module"></script>
+    <canvas id="paint" style="width: 280px; height: 280px; border: 2px solid black; background-color: black;"></canvas>
+    <canvas id="mnistPic" style="width: 280px; height: 280px; border: 2px solid black;"></canvas>
+    <br/>
+    <button id="clear" onclick="window.pClear()">clear</button>
+    <br/>
+    <br/>
+    <button id="predictPaint" onclick="window.scale()">Predict drawn digit</button>
+    <button id="predictMNIST" onclick="window.predict()">Predict random MNIST digit</button>
+
+    <br/>
+    <p id="lastError">Last Error: </p>
+    <p id="Error">Error: </p>
+    <br/>
+    <button id="training" onclick="window.trainingStep()">Train</button>
+    <script>
+        
+
+        function pClear() {
+            let canvas = document.getElementById("paint");
+            let ctx = canvas.getContext("2d");
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+        }
+    
+        window.pClear = pClear;
+        
+
+        var canvas = document.getElementById("paint");;
+        var canvas_style = getComputedStyle(canvas);
+        let ctx = canvas.getContext("2d");
+        canvas.width = parseInt(canvas_style.getPropertyValue('width'));
+        canvas.height = parseInt(canvas_style.getPropertyValue('height'));
+
+        var mouse = {x: 0, y: 0};
+        var last_mouse = {x: 0, y: 0};
+
+        /* Mouse Capturing Work */
+        canvas.addEventListener('mousemove', function(e) {
+            last_mouse.x = mouse.x;
+            last_mouse.y = mouse.y;
+
+            mouse.x = e.pageX - this.offsetLeft;
+            mouse.y = e.pageY - this.offsetTop;
+        }, false);
+
+
+        /* Drawing on Paint App */
+        ctx.lineWidth = 30;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'white';
+
+        canvas.addEventListener('mousedown', function(e) {
+            canvas.addEventListener('mousemove', onPaint, false);
+        }, false);
+
+        canvas.addEventListener('mouseup', function() {
+            canvas.removeEventListener('mousemove', onPaint, false);
+        }, false);
+
+        var onPaint = function() {
+            ctx.beginPath();
+            ctx.moveTo(last_mouse.x, last_mouse.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.closePath();
+            ctx.stroke();
+        };
+
+    </script>
+</body>
+</html>

@@ -300,8 +300,11 @@ class Netzwerk {
 
                 let err = this.train(inp, targ, opts);
                 errorSum += err;
+
+                if(i % inputs.length/100 === 0) {
+                    console.log(i/100, "von", inputs.length/100,"Zwischenschritten")
+                }
             }
-            errorSum = 0;
             
         }
         return errorSum / (rounds*inputs.length);
